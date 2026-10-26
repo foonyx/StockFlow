@@ -1,20 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.foonyx.stockflow.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.math.BigDecimal;
-
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
@@ -23,7 +19,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank
     @Column(nullable = false, unique = true)
     private String sku;
@@ -32,15 +28,25 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
+    @NotNull
     @Min(0)
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity = 0;
 
     private String description;
 
     @NotNull
-    @Column(nullable = false)
+    @Min(0)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
+
+    @NotNull
+    @Min(0)
+    @Column(nullable = false)
+    private Integer lowStockThreshold = 5;
+
+    public Product() {
+    }
 
     public Long getId() {
         return id;
@@ -66,6 +72,14 @@ public class Product {
         this.name = name;
     }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -82,8 +96,17 @@ public class Product {
         this.price = price;
     }
 
-    public int getQuantity() { return quantity;}
+    public Integer getLowStockThreshold() {
+        return lowStockThreshold;
+    }
 
-    public void setQuantity(int quantity) { this.quantity = quantity;}
+    public void setLowStockThreshold(Integer lowStockThreshold) {
+        this.lowStockThreshold = lowStockThreshold;
+    }
 
+    public boolean isLowStock() {
+        return quantity != null
+                && lowStockThreshold != null
+                && quantity <= lowStockThreshold;
+    }
 }

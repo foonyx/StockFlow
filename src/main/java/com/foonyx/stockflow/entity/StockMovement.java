@@ -1,7 +1,20 @@
+
 package com.foonyx.stockflow.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stock_movements")
@@ -11,16 +24,30 @@ public class StockMovement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @NotBlank
     @Column(nullable = false)
     private String type;
 
     @Min(1)
     @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    public StockMovement() {
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
     public Long getId() {
         return id;
@@ -52,5 +79,9 @@ public class StockMovement {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

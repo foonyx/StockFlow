@@ -1,0 +1,5 @@
+$kind: collection
+description: CRUD endpoints for managing products in the StockFlow Spring Boot application.
+variables:
+  base_url: http://localhost:8080
+  product_id: ""

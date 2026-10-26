@@ -1,0 +1,5 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/products/2/movements"
+method: GET
+order: 8000

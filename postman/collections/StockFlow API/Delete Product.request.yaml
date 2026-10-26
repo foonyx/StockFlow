@@ -1,0 +1,11 @@
+$kind: http-request
+method: DELETE
+url: '{{base_url}}/api/products/{{product_id}}'
+order: 5000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200 or 204", function () {
+          pm.expect(pm.response.code).to.be.oneOf([200, 204]);
+      });

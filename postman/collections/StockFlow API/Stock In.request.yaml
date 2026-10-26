@@ -1,0 +1,8 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/products/2/stock-in"
+method: POST
+body:
+  type: json
+  content: "{\r\n  \"quantity\": 10\r\n}"
+order: 6000
