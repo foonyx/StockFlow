@@ -1,0 +1,6 @@
+com\foonyx\stockflow\controller\ProductController.class
+com\foonyx\stockflow\StockflowApplication.class
+com\foonyx\stockflow\controller\StockFlowController.class
+com\foonyx\stockflow\service\ProductService.class
+com\foonyx\stockflow\entity\Product.class
+com\foonyx\stockflow\repository\ProductRepository.class
