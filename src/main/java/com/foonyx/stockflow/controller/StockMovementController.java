@@ -2,6 +2,7 @@
 package com.foonyx.stockflow.controller;
 
 import com.foonyx.stockflow.dto.StockMovementRequest;
+import com.foonyx.stockflow.dto.StockMovementResponse;
 import com.foonyx.stockflow.entity.StockMovement;
 import com.foonyx.stockflow.service.StockMovementService;
 import jakarta.validation.Valid;
@@ -21,28 +22,35 @@ public class StockMovementController {
     }
 
     @PostMapping("/stock-in")
-    public StockMovement stockIn(
+    public StockMovementResponse stockIn(
             @PathVariable Long productId,
             @Valid @RequestBody StockMovementRequest request) {
 
-        return stockMovementService.stockIn(
+        StockMovement movement = stockMovementService.stockIn(
                 productId, request.getQuantity());
+
+        return new StockMovementResponse(movement);
     }
 
     @PostMapping("/stock-out")
-    public StockMovement stockOut(
+    public StockMovementResponse stockOut(
             @PathVariable Long productId,
             @Valid @RequestBody StockMovementRequest request) {
 
-        return stockMovementService.stockOut(
+        StockMovement movement = stockMovementService.stockOut(
                 productId, request.getQuantity());
+
+        return new StockMovementResponse(movement);
     }
 
     @GetMapping("/movements")
-    public List<StockMovement> getMovements(
+    public List<StockMovementResponse> getMovements(
             @PathVariable Long productId) {
 
         return stockMovementService
-                .getMovementsByProduct(productId);
+                .getMovementsByProduct(productId)
+                .stream()
+                .map(StockMovementResponse::new)
+                .toList();
     }
 }

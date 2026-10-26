@@ -28,6 +28,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> getLowStockProducts() {
+        return productRepository.findLowStockProducts();
+    }
+
     public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() ->
