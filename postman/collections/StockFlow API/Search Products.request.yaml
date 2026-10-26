@@ -1,0 +1,7 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/products?search=note"
+method: GET
+queryParams:
+  search: note
+order: 11000

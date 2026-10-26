@@ -1,0 +1,8 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/products?sortBy=price&direction=asc"
+method: GET
+queryParams:
+  sortBy: price
+  direction: asc
+order: 12000

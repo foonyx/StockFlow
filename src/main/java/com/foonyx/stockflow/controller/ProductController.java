@@ -27,14 +27,14 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts(
-            @RequestParam(required = false) String search) {
+    public List<Product> getProducts(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "false") boolean lowStockOnly,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
 
-        if (search != null) {
-            return productService.searchProducts(search);
-        }
-
-        return productService.getAllProducts();
+        return productService.filterAndSearchProducts(
+                search, lowStockOnly, sortBy, direction);
     }
 
     @GetMapping("/low-stock")

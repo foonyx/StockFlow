@@ -1,0 +1,10 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/products?search=note&lowStockOnly=true&sortBy=price&direction=asc"
+method: GET
+queryParams:
+  search: note
+  lowStockOnly: "true"
+  sortBy: price
+  direction: asc
+order: 15000

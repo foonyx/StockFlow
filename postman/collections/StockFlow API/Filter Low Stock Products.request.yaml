@@ -1,0 +1,7 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/products?lowStockOnly=true"
+method: GET
+queryParams:
+  lowStockOnly: "true"
+order: 14000

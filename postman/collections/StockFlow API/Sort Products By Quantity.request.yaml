@@ -1,0 +1,8 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/products?sortBy=quantity&direction=desc"
+method: GET
+queryParams:
+  sortBy: quantity
+  direction: desc
+order: 13000

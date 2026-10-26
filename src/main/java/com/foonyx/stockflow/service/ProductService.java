@@ -6,13 +6,18 @@ import com.foonyx.stockflow.entity.Product;
 import com.foonyx.stockflow.exception.ProductNotFoundException;
 import com.foonyx.stockflow.repository.ProductRepository;
 import com.foonyx.stockflow.repository.StockMovementRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProductService {
+
+    private static final Set<String> ALLOWED_SORT_FIELDS =
+            Set.of("name", "sku", "price", "quantity");
 
     private final ProductRepository productRepository;
     private final StockMovementRepository stockMovementRepository;
@@ -34,6 +39,45 @@ public class ProductService {
         }
 
         return productRepository.searchProducts(search.trim());
+    }
+
+    public List<Product> filterAndSearchProducts(
+            String search,
+            boolean lowStockOnly,
+            String sortBy,
+            String direction) {
+
+        String sortField = (sortBy == null || sortBy.isBlank())
+                ? "name"
+                : sortBy.trim();
+
+        if (!ALLOWED_SORT_FIELDS.contains(sortField)) {
+            throw new IllegalArgumentException(
+                    "Invalid sort field. Allowed fields: "
+                            + ALLOWED_SORT_FIELDS);
+        }
+
+        String sortDirection = (direction == null || direction.isBlank())
+                ? "asc"
+                : direction.trim();
+
+        Sort.Direction sortOrder;
+
+        try {
+            sortOrder = Sort.Direction.fromString(sortDirection);
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(
+                    "Invalid sort direction. Use 'asc' or 'desc'.");
+        }
+
+        String searchTerm = (search == null || search.isBlank())
+                ? null
+                : search.trim();
+
+        Sort sort = Sort.by(sortOrder, sortField);
+
+        return productRepository.filterAndSearchProducts(
+                searchTerm, lowStockOnly, sort);
     }
 
     public List<Product> getLowStockProducts() {

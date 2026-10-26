@@ -2,6 +2,7 @@
 package com.foonyx.stockflow.repository;
 
 import com.foonyx.stockflow.entity.Product;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,21 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                OR LOWER(p.sku) LIKE LOWER(CONCAT('%', :search, '%'))
             """)
     List<Product> searchProducts(@Param("search") String search);
+
+    @Query("""
+            SELECT p FROM Product p
+            WHERE (
+                :search IS NULL
+                OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(p.sku) LIKE LOWER(CONCAT('%', :search, '%'))
+            )
+            AND (
+                :lowStockOnly = false
+                OR p.quantity <= p.lowStockThreshold
+            )
+            """)
+    List<Product> filterAndSearchProducts(
+            @Param("search") String search,
+            @Param("lowStockOnly") boolean lowStockOnly,
+            Sort sort);
 }
