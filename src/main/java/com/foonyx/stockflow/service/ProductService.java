@@ -28,6 +28,14 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> searchProducts(String search) {
+        if (search == null || search.isBlank()) {
+            return getAllProducts();
+        }
+
+        return productRepository.searchProducts(search.trim());
+    }
+
     public List<Product> getLowStockProducts() {
         return productRepository.findLowStockProducts();
     }
