@@ -1,0 +1,16 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local application configuration
+application-local.properties
+application-dev.properties
+
+# Build output
+target/
+frontend/node_modules/
+frontend/dist/
+
+# Local IDE files
+.idea/
