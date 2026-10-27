@@ -12,5 +12,8 @@ public interface StockMovementRepository
     List<StockMovement> findByProductIdOrderByCreatedAtDesc(
             Long productId);
 
+    // Get all stock movements, newest first
+    List<StockMovement> findAllByOrderByCreatedAtDesc();
+
     boolean existsByProductId(Long productId);
 }

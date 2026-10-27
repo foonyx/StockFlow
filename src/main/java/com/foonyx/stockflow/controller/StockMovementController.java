@@ -53,4 +53,14 @@ public class StockMovementController {
                 .map(StockMovementResponse::new)
                 .toList();
     }
+
+    @GetMapping("/movements/all")
+    public List<StockMovementResponse> getAllMovements() {
+        return stockMovementService
+                .getAllMovements()
+                .stream()
+                .map(StockMovementResponse::new)
+                .toList();
+    }
+
 }

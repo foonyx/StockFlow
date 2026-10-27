@@ -83,6 +83,11 @@ public class StockMovementService {
                 .findByProductIdOrderByCreatedAtDesc(productId);
     }
 
+    @Transactional(readOnly = true)
+    public List<StockMovement> getAllMovements() {
+        return stockMovementRepository.findAllByOrderByCreatedAtDesc();
+    }
+
     private Admin getCurrentAdmin() {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
