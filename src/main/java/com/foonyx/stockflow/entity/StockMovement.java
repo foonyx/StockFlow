@@ -28,6 +28,10 @@ public class StockMovement {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id", nullable = false)
+    private Admin admin;
+
     @NotBlank
     @Column(nullable = false)
     private String type;
@@ -63,6 +67,14 @@ public class StockMovement {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
     }
 
     public String getType() {
