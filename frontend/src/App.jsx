@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Dashboard from './Dashboard';
 import Products from './Products';
+import StockMovements from './StockMovements';
 import './App.css';
 
 function App() {
@@ -76,6 +77,10 @@ function App() {
 
   if (currentPath === '/products') {
     return <Products />;
+  }
+
+  if (currentPath === '/movements') {
+    return <StockMovements />;
   }
 
   return (
