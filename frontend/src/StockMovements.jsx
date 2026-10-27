@@ -8,6 +8,20 @@ function StockMovements() {
     const [movements, setMovements] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [movementFilter, setMovementFilter] = useState('ALL');
+
+    const filteredMovements = movements.filter((movement) => {
+        const matchesSearch = movement.productName
+            .toLowerCase()
+            .includes(searchTerm.trim().toLowerCase());
+
+        const matchesType =
+            movementFilter === 'ALL' ||
+            movement.type === movementFilter;
+
+        return matchesSearch && matchesType;
+    });
 
     useEffect(() => {
         async function loadMovements() {
@@ -131,10 +145,29 @@ function StockMovements() {
                     </div>
                 </section>
 
+
                 <section className="movements-table-card">
                     <div className="movements-table-heading">
                         <h2>Movement History</h2>
                         <span>Newest first</span>
+                    </div>
+
+                    <div className="movement-filters">
+                        <input
+                            type="text"
+                            placeholder="Search by product name..."
+                            value={searchTerm}
+                            onChange={(event) => setSearchTerm(event.target.value)}
+                        />
+
+                        <select
+                            value={movementFilter}
+                            onChange={(event) => setMovementFilter(event.target.value)}
+                        >
+                            <option value="ALL">All movements</option>
+                            <option value="STOCK_IN">Stock In</option>
+                            <option value="STOCK_OUT">Stock Out</option>
+                        </select>
                     </div>
 
                     {loading ? (
@@ -143,7 +176,7 @@ function StockMovements() {
                         </div>
                     ) : error ? (
                         <div className="products-error">{error}</div>
-                    ) : movements.length === 0 ? (
+                    ) : filteredMovements.length === 0 ? (
                         <div className="movement-message">
                             No stock movements found.
                         </div>
@@ -161,7 +194,7 @@ function StockMovements() {
                                 </thead>
 
                                 <tbody>
-                                {movements.map((movement) => (
+                                {filteredMovements.map((movement) => (
                                     <tr key={movement.id}>
                                         <td>
                                             {formatDate(
@@ -218,7 +251,7 @@ function StockMovements() {
 
                 {!loading && !error && (
                     <p className="movements-count">
-                        {movements.length} movement record(s)
+                        Showing {filteredMovements.length} of {movements.length} movement record(s)
                     </p>
                 )}
             </main>
