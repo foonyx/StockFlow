@@ -143,15 +143,32 @@ function Products() {
                     <span>StockFlow</span>
                 </div>
 
+
                 <nav className="sidebar-nav">
                     <a className="nav-link" href="/dashboard">Dashboard</a>
                     <a className="nav-link active" href="/products">Products</a>
                     <a className="nav-link" href="/movements">Stock Movements</a>
                 </nav>
 
-                <button className="logout-button" onClick={handleLogout}>
-                    Sign out
-                </button>
+                <div className="sidebar-section-title">
+                    ACCOUNT & SETTINGS
+                </div>
+
+                <nav className="sidebar-nav">
+                    <a className="nav-link" href="/admin-approvals">
+                        Admin Approvals
+                    </a>
+                    <a className="nav-link" href="/change-password">
+                        Change Password
+                    </a>
+                </nav>
+
+                <div className="sidebar-logout-section">
+                    <button className="logout-button" onClick={handleLogout}>
+                        Sign out
+                    </button>
+                </div>
+
             </aside>
 
             <main className="products-main">

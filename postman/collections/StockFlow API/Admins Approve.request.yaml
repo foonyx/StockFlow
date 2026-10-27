@@ -1,0 +1,12 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/admins/3/approve"
+method: PATCH
+body:
+  type: json
+  content: ""
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0m8z}}"
+order: 20000

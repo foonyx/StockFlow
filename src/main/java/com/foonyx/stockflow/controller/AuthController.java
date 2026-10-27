@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.foonyx.stockflow.dto.auth.RegisterRequest;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
+import com.foonyx.stockflow.dto.auth.ChangePasswordRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
@@ -43,6 +46,17 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("Registration successful. Your account is pending approval.");
+
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
+
+        authService.changePassword(authentication.getName(), request);
+
+        return ResponseEntity.ok("Password changed successfully.");
     }
 
     @ExceptionHandler(BadCredentialsException.class)

@@ -18,6 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import com.foonyx.stockflow.dto.auth.AdminResponse;
+import com.foonyx.stockflow.dto.auth.ChangePasswordRequest;
 import java.util.List;
 
 
@@ -135,6 +136,36 @@ public class AuthService {
         return adminRepository.findByUsername(username)
                 .map(admin -> "ACTIVE".equals(admin.getStatus()))
                 .orElse(false);
+    }
+
+    @Transactional
+    public void changePassword(
+            String username,
+            ChangePasswordRequest request) {
+
+        Admin admin = adminRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Admin account not found"));
+
+        if (!"ACTIVE".equals(admin.getStatus())) {
+            throw new IllegalStateException(
+                    "Only active administrators can change their password");
+        }
+
+        if (!passwordEncoder.matches(
+                request.getCurrentPassword(), admin.getPassword())) {
+            throw new IllegalArgumentException(
+                    "Current password is incorrect");
+        }
+
+        if (passwordEncoder.matches(
+                request.getNewPassword(), admin.getPassword())) {
+            throw new IllegalArgumentException(
+                    "New password must be different from the current password");
+        }
+
+        admin.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        adminRepository.save(admin);
     }
 
 }

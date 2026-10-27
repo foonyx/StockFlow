@@ -4,6 +4,9 @@ import Dashboard from './Dashboard';
 import Products from './Products';
 import StockMovements from './StockMovements';
 import './App.css';
+import ChangePassword from './ChangePassword';
+import Register from './Register';
+import AdminApprovals from './AdminApprovals';
 
 function App() {
   const [username, setUsername] = useState('');
@@ -83,6 +86,18 @@ function App() {
     return <StockMovements />;
   }
 
+  if (currentPath === '/change-password') {
+    return <ChangePassword />;
+  }
+
+  if (currentPath === '/register') {
+    return <Register />;
+  }
+
+  if (currentPath === '/admin-approvals') {
+    return <AdminApprovals />;
+  }
+
   return (
       <main className="login-page">
         <section className="login-card">
@@ -126,6 +141,9 @@ function App() {
           </form>
 
           <p className="login-footer">Authorized administrators only</p>
+          <p className="login-footer">
+            Need an account? <a href="/register">Register here</a>
+          </p>
         </section>
       </main>
   );
