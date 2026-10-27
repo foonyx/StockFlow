@@ -9,12 +9,16 @@ import com.foonyx.stockflow.repository.StockMovementRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class ProductService {
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(ProductService.class);
 
     private static final Set<String> ALLOWED_SORT_FIELDS =
             Set.of("name", "sku", "price", "quantity");
@@ -101,7 +105,9 @@ public class ProductService {
         product.setLowStockThreshold(request.getLowStockThreshold());
         product.setQuantity(0);
 
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        logger.info("Product created successfully: {}", savedProduct.getName());
+        return savedProduct;
     }
 
     @Transactional
@@ -113,7 +119,9 @@ public class ProductService {
         product.setPrice(request.getPrice());
         product.setLowStockThreshold(request.getLowStockThreshold());
 
-        return productRepository.save(product);
+        Product updatedProduct = productRepository.save(product);
+        logger.info("Product updated successfully: {}", updatedProduct.getName());
+        return updatedProduct;
     }
 
     @Transactional
@@ -131,5 +139,6 @@ public class ProductService {
         }
 
         productRepository.delete(product);
+        logger.info("Product deleted successfully: {}", product.getName());
     }
 }

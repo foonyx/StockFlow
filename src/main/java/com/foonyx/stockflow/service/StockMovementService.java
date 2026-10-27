@@ -12,12 +12,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Service
 public class StockMovementService {
-
+    private static final Logger logger = LoggerFactory.getLogger(StockMovementService.class);
     private final ProductRepository productRepository;
     private final StockMovementRepository stockMovementRepository;
     private final AdminRepository adminRepository;
@@ -47,8 +48,10 @@ public class StockMovementService {
         movement.setType("STOCK_IN");
         movement.setQuantity(quantity);
 
-        return stockMovementRepository.save(movement);
-    }
+        StockMovement savedMovement = stockMovementRepository.save(movement);
+        logger.info("Stock-in successful: product={}, quantity={}, admin={}",
+                product.getName(), quantity, admin.getUsername());
+        return savedMovement;    }
 
     @Transactional
     public StockMovement stockOut(Long productId, int quantity) {
@@ -72,7 +75,10 @@ public class StockMovementService {
         movement.setType("STOCK_OUT");
         movement.setQuantity(quantity);
 
-        return stockMovementRepository.save(movement);
+        StockMovement savedMovement = stockMovementRepository.save(movement);
+        logger.info("Stock-out successful: product={}, quantity={}, admin={}",
+                product.getName(), quantity, admin.getUsername());
+        return savedMovement;
     }
 
     @Transactional(readOnly = true)
