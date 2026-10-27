@@ -1,0 +1,9 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/stock-movements"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0oum}}"
+order: 17000

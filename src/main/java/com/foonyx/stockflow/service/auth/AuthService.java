@@ -13,6 +13,13 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.security.oauth2.jwt.JwsHeader;
+import com.foonyx.stockflow.dto.auth.RegisterRequest;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+import com.foonyx.stockflow.dto.auth.AdminResponse;
+import java.util.List;
+
 
 import java.time.Instant;
 
@@ -39,7 +46,8 @@ public class AuthService {
                         "Invalid username or password"));
 
         if (!passwordEncoder.matches(
-                request.getPassword(), admin.getPassword())) {
+                request.getPassword(), admin.getPassword())
+                || !"ACTIVE".equals(admin.getStatus())) {
             throw new BadCredentialsException(
                     "Invalid username or password");
         }
@@ -66,4 +74,67 @@ public class AuthService {
 
         return new LoginResponse(token, "Bearer");
     }
+
+    @Transactional
+    public void register(RegisterRequest request) {
+        String username = request.getUsername().trim();
+
+        if (adminRepository.findByUsername(username).isPresent()) {
+            throw new IllegalArgumentException("Username is already taken");
+        }
+
+        Admin admin = new Admin();
+        admin.setUsername(username);
+        admin.setPassword(passwordEncoder.encode(request.getPassword()));
+        admin.setStatus("PENDING");
+
+        adminRepository.save(admin);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<AdminResponse> getPendingAdmins() {
+        return adminRepository.findByStatusOrderByIdAsc("PENDING")
+                .stream()
+                .map(AdminResponse::new)
+                .toList();
+    }
+
+    @Transactional
+    public void approveAdmin(Long id) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Admin account not found"));
+
+        if (!"PENDING".equals(admin.getStatus())) {
+            throw new IllegalStateException(
+                    "Only pending accounts can be approved");
+        }
+
+        admin.setStatus("ACTIVE");
+        adminRepository.save(admin);
+    }
+
+    @Transactional
+    public void rejectAdmin(Long id) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Admin account not found"));
+
+        if (!"PENDING".equals(admin.getStatus())) {
+            throw new IllegalStateException(
+                    "Only pending accounts can be rejected");
+        }
+
+        admin.setStatus("REJECTED");
+        adminRepository.save(admin);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isActiveAdmin(String username) {
+        return adminRepository.findByUsername(username)
+                .map(admin -> "ACTIVE".equals(admin.getStatus()))
+                .orElse(false);
+    }
+
 }

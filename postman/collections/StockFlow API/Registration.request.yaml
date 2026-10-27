@@ -1,0 +1,20 @@
+$kind: http-request
+description: ""
+url: "{{base_url}}/api/auth/register"
+method: POST
+body:
+  type: json
+  content: "\r
+
+    {\r
+
+    \  \"username\": \"adminb\",\r
+
+    \  \"password\": \"SecurePass123!\"\r
+
+    }\r\n"
+auth:
+  type: bearer
+  credentials:
+    token: ""
+order: 18000

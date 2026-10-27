@@ -22,6 +22,9 @@ public class Admin {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, length = 20)
+    private String status = "ACTIVE";
+
     public Admin() {
     }
 
@@ -43,5 +46,13 @@ public class Admin {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

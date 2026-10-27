@@ -11,6 +11,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import com.foonyx.stockflow.security.ActiveAdminAuthorization;
+import org.springframework.security.config.Customizer;
 
 import java.util.List;
 
@@ -41,10 +43,12 @@ public class SecurityConfig {
 
         return source;
     }
-
+    
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+            HttpSecurity http,
+            ActiveAdminAuthorization activeAdminAuthorization)
+            throws Exception {
 
         http
                 .cors(cors -> cors.configurationSource(
@@ -58,13 +62,26 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/login",
+                                "/api/auth/register",
                                 "/error"
                         ).permitAll()
-                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/admins/**")
+                        .access((authentication, context) ->
+                                new org.springframework.security.authorization
+                                        .AuthorizationDecision(
+                                        activeAdminAuthorization.isActiveAdmin(
+                                                authentication.get())))
+                        .requestMatchers("/api/**")
+                        .access((authentication, context) ->
+                                new org.springframework.security.authorization
+                                        .AuthorizationDecision(
+                                        activeAdminAuthorization.isActiveAdmin(
+                                                authentication.get())))
                         .anyRequest().denyAll())
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> {}));
+                        .jwt(Customizer.withDefaults()));
 
         return http.build();
     }
+
 }
